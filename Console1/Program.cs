@@ -38,7 +38,6 @@ namespace Console1
             {
                 Console.WriteLine("Color Id = " + color.ColorId + "  |  " + "Color Name = " + color.ColorName);
             }
-            Console.WriteLine(" ");
         }
     }
 }
