@@ -1,5 +1,6 @@
 ﻿using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,13 +17,13 @@ namespace DataAccess.Concrete.InMemory
         {
             _cars = new List<Car>
             {
-                new Car{Id =1, BrandId=123, ColorId=12345, ModelYear=2018,DailyPrice=650, Descriptions ="Tofaş"},
-                new Car{Id =2, BrandId=234, ColorId=23456, ModelYear=2019,DailyPrice=750, Descriptions ="bmw"},
-                new Car{Id =3, BrandId=345, ColorId=34567, ModelYear=2020,DailyPrice=850, Descriptions ="çakmak"},
-                new Car{Id =4, BrandId=456, ColorId=45678, ModelYear=2021,DailyPrice=950, Descriptions ="melike"},
-                new Car{Id =5, BrandId=567, ColorId=56789, ModelYear=2022,DailyPrice=1050, Descriptions ="doblo"},
-                new Car{Id =6, BrandId=678, ColorId=67891, ModelYear=2023,DailyPrice=1150, Descriptions ="nissan"},
-                new Car{Id =7, BrandId=789, ColorId=78912, ModelYear=2024,DailyPrice=1250, Descriptions ="keşke arabam olsa"},
+                new Car{Id =1, BrandId=1, ColorId=1, ModelYear=2018,DailyPrice=650, Descriptions ="Tofaş"},
+                new Car{Id =2, BrandId=2, ColorId=2, ModelYear=2019,DailyPrice=750, Descriptions ="bmw"},
+                new Car{Id =3, BrandId=3, ColorId=3, ModelYear=2020,DailyPrice=850, Descriptions ="çakmak"},
+                new Car{Id =4, BrandId=4, ColorId=4, ModelYear=2021,DailyPrice=950, Descriptions ="melike"},
+                new Car{Id =5, BrandId=5, ColorId=5, ModelYear=2022,DailyPrice=1050, Descriptions ="doblo"},
+                new Car{Id =6, BrandId=6, ColorId=6, ModelYear=2023,DailyPrice=1150, Descriptions ="nissan"},
+                new Car{Id =7, BrandId=7, ColorId=7, ModelYear=2024,DailyPrice=1250, Descriptions ="keşke arabam olsa"},
             };
         }
         public void Add(Car car)
@@ -32,7 +33,7 @@ namespace DataAccess.Concrete.InMemory
 
         public void Delete(Car car)
         {
-            Car CarToDelete = _cars.SingleOrDefault(Car=>Car.Id ==Car.Id);
+            Car CarToDelete = _cars.SingleOrDefault(c => c.Id == car.Id);
             _cars.Remove(CarToDelete);
         }
 
@@ -55,9 +56,15 @@ namespace DataAccess.Concrete.InMemory
         {
             return _cars.Where(Car => Car.Id == id).ToList();
         }
+
+        public List<CarDetailDto> GetCarDetails()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Update(Car car)
         {
-            Car CarToUpdate = _cars.SingleOrDefault(Car => Car.Id == car.Id);
+            Car CarToUpdate = _cars.SingleOrDefault(c => c.Id == car.Id);
             CarToUpdate.BrandId = car.BrandId;
             CarToUpdate.ModelYear = car.ModelYear;
             CarToUpdate.ColorId = car.ColorId;

@@ -19,11 +19,13 @@ namespace Business.Concrete
         public void Add(Color color)
         {
             _colorDal.Add(color);
+            Console.WriteLine("Sisteme " + color.ColorId + " numaralı " + color.ColorName + " renk araç bilgisi eklendi.");
         }
 
         public void Delete(Color color)
         {
             _colorDal.Delete(color);
+            Console.WriteLine("Sistemden " + color.ColorId + " numaralı " + color.ColorName + " renk araç bilgisi silindi.");
         }
 
         public List<Color> GetAll()
@@ -39,6 +41,12 @@ namespace Business.Concrete
         public void Update(Color color)
         {
             _colorDal.Update(color);
+            Console.WriteLine("Sistemde yer alan " + color.ColorId + " numaralı " + color.ColorName + " renk araç bilgisi güncellendi.");
+        }
+
+        List<Color> IColorService.GetCarsByColorId(int colorId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
