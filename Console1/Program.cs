@@ -266,5 +266,45 @@ namespace Console1
             brandManager.Update(new Brand { BrandId = 1003, BrandName = "Ford" });
             colorManager.Update(new Color { ColorId = 1003, ColorName = "Pink" });
         }
+        private static void AddCustomer()
+        {
+            Customer _customer = new Customer();
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            Console.WriteLine("-------------Yeni Müşteri Ekleme İşlemi-------------");
+            Console.Write("Customer Id = ");
+            _customer.CustomerId = int.Parse(Console.ReadLine());
+            Console.Write(" Yeni Müşteri Adı = ");
+            _customer.CustomerName = Console.ReadLine();
+            Console.Write(" Yeni Müşteri soyadı = ");
+            _customer.CustomerLastName = Console.ReadLine();
+            
+            
+            var result = customerManager.Add(_customer);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
+        private static void DeleteCustomer()
+        {
+            Customer _customer = new Customer();
+            CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
+            Console.WriteLine("-------------Müşteri Silme işlemi--------------");
+            Console.Write("Customer Id = ");
+            int customerId = int.Parse(Console.ReadLine());
+            var result = customerManager.Delete(customerId);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
     }
 }

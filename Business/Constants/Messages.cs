@@ -20,5 +20,21 @@ namespace Business.Constants
         public static string DescriptionInvalid = "Açıklama 2 karakterden büyük olmalıdır";
         public static string DailyPriceInvalid = "Araç günlük kirası 0'dan büyük olmalıdır.";
         public static string IdError = "Girdiğiniz ID bilgisi sistemde bulunamadı";
+
+        public static string RentalAdded = "Araba kiralama işlemi başarıyla gerçekleşti";
+        public static string RentalDeleted = "Araba kiralama işlemi iptal edildi";
+        public static string RentalUpdated = "Araba kiralama işlemi güncellendi";
+        public static string FailedRentalAddOrUpdate = "Bu araba henüz teslim edilmediği için kiralama işlemi yapamazsınız";
+        public static string RentalReturned = "Kiraladığınız araç teslim edildi.";
+
+        public static string CustomerAdded = "Müşteri eklendi";
+        public static string CustomerDeleted = "Müşteri silindi";
+        public static string CustomerUpdated = "Müşteri güncellendi";
+
+        public static string UserAdded = "Kullanıcı eklendi";
+        public static string UserDeleted = "Kullanıcı silindi";
+        public static string UserUpdated = "Kullanıcı güncellendi";
+
+
     }
 }
