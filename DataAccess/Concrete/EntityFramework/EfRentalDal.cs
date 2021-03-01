@@ -15,5 +15,10 @@ namespace DataAccess.Concrete.EntityFramework
         {
             throw new NotImplementedException();
         }
+
+        public RentalDetailDto GetRentalDetailsByCarId(int rentalId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

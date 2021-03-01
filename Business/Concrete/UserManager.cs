@@ -9,39 +9,31 @@ using System.Text;
 
 namespace Business.Concrete
 {
-    public class UserManager :IUserService
+    public class UserManager : IUserService
     {
-        IUserDal _userDal;
-        public UserManager(IUserDal userDal)
-        {
-            _userDal = userDal;
-        }
         public IResult Add(User users)
         {
-            _userDal.Add(users);
-            return new SuccesResult(Messages.UserAdded);
+            throw new NotImplementedException();
         }
 
-        public IResult Delete(User user)
+        public IResult Delete(int userId)
         {
-            _userDal.Delete(user);
-            return new SuccesResult(Messages.UserDeleted);
+            throw new NotImplementedException();
         }
 
         public IDataResult<List<User>> GetAll()
         {
-            return new SuccessDataResult<List<User>>(_userDal.GetAll());
+            throw new NotImplementedException();
         }
 
-        public IDataResult<User> GetById(int Id)
+        public IDataResult<List<User>> GetUsersById(int userId)
         {
-            return new SuccessDataResult<User>(_userDal.Get(u => u.UserId == Id));
+            throw new NotImplementedException();
         }
 
         public IResult Update(User users)
         {
-            _userDal.Update(users);
-            return new SuccesResult(Messages.UserUpdated);
+            throw new NotImplementedException();
         }
     }
 }

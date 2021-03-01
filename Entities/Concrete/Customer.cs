@@ -12,11 +12,10 @@ namespace Entities.Concrete
         //bir dakika geleceğim tmm
         //bu burda dursun pasif olarakü
         [Key]
-        public int CustomerId { get; set; } 
+        
         [ForeignKey("UserId")]
         public int UserId { get; set; }
-        public string CampanyName { get; set; }     
-        public string CustomerName { get; set; }
-        public string CustomerLastName { get; set; }
+        public string CompanyName { get; set; }     
+   
     }
 }

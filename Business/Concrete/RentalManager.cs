@@ -20,18 +20,32 @@ namespace Business.Concrete
         }
         public IResult Add(Rental rental)
         {
-            if (rental.ReturnDate == null && _rentalDal.GetCarDetails(I => I.CarId == rental.CarId).Count > 0)
+            if (rental.RentDate == null)
+            {
+                _rentalDal.Add(rental);
+                return new SuccesResult(Messages.RentalAdded);
+
+            }
+            else if (rental.RentDate != null && rental.ReturnDate != null)
+            {
+                _rentalDal.Add(rental);
+                return new SuccesResult(Messages.RentalAdded);
+            }
+            else
             {
                 return new ErrorResult(Messages.FailedRentalAddOrUpdate);
             }
-            _rentalDal.Add(rental);
-            return new SuccesResult(Messages.RentalAdded);
         }
 
         public IResult Delete(Rental rental)
         {
             _rentalDal.Delete(rental);
             return new SuccesResult(Messages.RentalDeleted);
+        }
+
+        public IResult Delete(int rentalId)
+        {
+            throw new NotImplementedException();
         }
 
         public IDataResult<List<Rental>> GetAll()
@@ -47,6 +61,16 @@ namespace Business.Concrete
         public IDataResult<List<RentalDetailDto>> GetRentalDetails(Expression<Func<Rental, bool>> filter = null)
         {
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetCarDetails(filter), Messages.RentalReturned);
+        }
+
+        public IDataResult<List<RentalDetailDto>> GetRentalDetails()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDataResult<List<Rental>> GetRentalsById(int rentalId)
+        {
+            throw new NotImplementedException();
         }
 
         public IResult Update(Rental rental)

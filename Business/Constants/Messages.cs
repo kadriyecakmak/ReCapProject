@@ -27,9 +27,11 @@ namespace Business.Constants
         public static string FailedRentalAddOrUpdate = "Bu araba henüz teslim edilmediği için kiralama işlemi yapamazsınız";
         public static string RentalReturned = "Kiraladığınız araç teslim edildi.";
 
+        public static string CustomersListed = "Müşteri bilgileri listelendi.";
         public static string CustomerAdded = "Müşteri eklendi";
         public static string CustomerDeleted = "Müşteri silindi";
         public static string CustomerUpdated = "Müşteri güncellendi";
+        public static string CompanyNameInvalid = "şirket ismi en az 2 karakter olmalıdır.";
 
         public static string UserAdded = "Kullanıcı eklendi";
         public static string UserDeleted = "Kullanıcı silindi";
