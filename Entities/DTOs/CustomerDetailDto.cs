@@ -7,7 +7,7 @@ namespace Entities.DTOs
 {
     public class CustomerDetailDto :IDto
     {
-        //bunu oluşturmussun mesela buraya istenilen alanları yazarız
+        
         public int UserId { get; set; }
         public string CompanyName { get; set; }
         

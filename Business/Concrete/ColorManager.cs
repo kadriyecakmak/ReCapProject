@@ -28,10 +28,15 @@ namespace Business.Concrete
                 Console.WriteLine(color.ColorId + " numaralı " + color.ColorName + " Renk bilgisi sisteme eklendi");
                 return new SuccesResult(Messages.Added);
             }
-            else
+            else if (color.ColorName.Length < 2)
             {
                 return new ErrorResult(Messages.ColorNameInvalid);
             }
+            else
+            {
+                return new ErrorResult(Messages.Error);
+            }
+
         }
 
         public IResult Delete(int colorId)
@@ -57,11 +62,8 @@ namespace Business.Concrete
 
         public IDataResult<List<Color>> GetAll()
         {
-            if (DateTime.Now.Hour == 1)
-            {
-                return new ErrorDataResult<List<Color>>(Messages.MaintenanceTime);
-            }
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.Added); 
+
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.ColorsListed);
         }
 
         public IDataResult<List<Color>> GetCarsByColorId(int colorId)

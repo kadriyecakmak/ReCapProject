@@ -23,7 +23,7 @@ namespace Business.Concrete
             if(customer.CompanyName.Length > 2)
             {
                 _customerDal.Add(customer);
-                Console.WriteLine();
+                Console.WriteLine(customer.UserId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
                 return new SuccesResult(Messages.CustomerAdded);
             }
             else if (customer.CompanyName.Length < 2)
@@ -68,7 +68,7 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
         }
-
+    
         public IDataResult<List<Customer>> GetCustomersById(int userId)
         {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(m => m.UserId == userId));

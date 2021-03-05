@@ -9,11 +9,9 @@ namespace Entities.Concrete
 {
     public class Customer:IEntity
     {
-        //bir dakika geleceğim tmm
-        //bu burda dursun pasif olarakü
         [Key]
         
-        [ForeignKey("UserId")]
+      
         public int UserId { get; set; }
         public string CompanyName { get; set; }     
    

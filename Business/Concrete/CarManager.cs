@@ -2,6 +2,7 @@
 using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -14,27 +15,27 @@ namespace Business.Concrete
     {
         
         ICarDal _carDal;
-
         public CarManager(ICarDal carDal)
         {
             _carDal = carDal;
         }
-
+        
         public IResult Add(Car car)
         {
-            if (car.Descriptions.Length > 2 && car.DailyPrice != 0) 
+            if (car.Description.Length > 2 && car.DailyPrice != 0) 
+            
             {
                 _carDal.Add(car);
-                Console.WriteLine(car.Id + " numaralı " + car.Descriptions + " araç bilgisi sisteme eklendi");
+                Console.WriteLine(car.CarId + " numaralı " + car.Description + " araç bilgisi sisteme eklendi");
                 return new SuccesResult( Messages.Added); 
-            }
-            else if(car.Descriptions.Length < 2)
-            {
-                return new ErrorResult(Messages.DescriptionInvalid);
             }
             else if (car.DailyPrice == 0)
             {
                 return new ErrorResult(Messages.DailyPriceInvalid);
+            }
+            else if (car.CarName.Length < 2)
+            {
+                return new ErrorResult(Messages.CarNameInvalid);
             }
             else
             {
@@ -47,7 +48,7 @@ namespace Business.Concrete
         {
             try
             {
-                var carBul = _carDal.Get(c => c.Id == carId);
+                var carBul = _carDal.Get(c => c.CarId == carId);
                 if (carBul != null)
                 {
                     _carDal.Delete(carBul);
@@ -71,7 +72,7 @@ namespace Business.Concrete
                 
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(),Messages.Added);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
@@ -84,8 +85,8 @@ namespace Business.Concrete
         {
             _carDal.Update(car);
             
-            Console.WriteLine("Sistemde yer alan " + car.Id + " numaralı " + car.Descriptions + " model araç bilgisi güncellendi.");
-            return new Result(true, "Araba güncellendi");
+            Console.WriteLine("Sistemde yer alan " + car.CarId + " numaralı " + car.Description + " model araç bilgisi güncellendi.");
+            return new Result(true, Messages.Updated);
         }
 
         public IDataResult<List<Car>> GetCarsByBrandId(int id)
@@ -93,9 +94,13 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == id));
         }
 
-        public IDataResult<List<Car>> GetCarsByColorId(int id)
+        public IDataResult<List<Car>> GetCarsByColorId(int carId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == id));
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == carId));
+        }
+        public List<Car>GetCarsByCarId(int carId)
+        {
+            return _carDal.GetAll(c => c.CarId == carId);
         }
     }
 }
