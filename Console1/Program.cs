@@ -15,7 +15,7 @@ namespace Console1
             while (Durum == true)
 
             {
-                Console.Write("İşlem Seçiniz --> Ekleme {A} - Silme {D} - Güncelleme {U} - Listeleme {L} = ");
+                Console.Write("İşlemm Seçiniz --> Ekleme {A} - Silme {D} - Güncelleme {U} - Listeleme {L} = ");
                 string islem = Console.ReadLine();
                 if (islem == "A")
                 {
