@@ -15,11 +15,11 @@ namespace Console1
             while (Durum == true)
 
             {
-                Console.Write("İşlem Seçiniz --> Ekleme {A} - Silme {D} - Güncelleme {U} - Listeleme {L} ");
+                Console.Write("İşlem Seçiniz --> Ekleme {A} - Silme {D} - Güncelleme {U} - Listeleme {L} = ");
                 string islem = Console.ReadLine();
                 if (islem == "A")
                 {
-                    Console.Write("Eklemek istediğiniz nedir? --> Yeni Araç {C} - Marka {B} - Renk {K} - Müşteri  {M} -Kullanıcı{U} - Kiralama {R}");
+                    Console.Write("Eklemek istediğiniz nedir? --> Yeni Araç {C} - Marka {B} - Renk {K} - Müşteri  {M} -Kullanıcı{U} - Kiralama {R} = ");
                     string islemA = Console.ReadLine();
                     if (islemA == "C")
                     {
@@ -42,6 +42,10 @@ namespace Console1
                     {
                         RentalAdd();
                     }
+                    else if (islemA == "U")
+                    {
+                        UserAdd();
+                    }
                     else
                     {
                         Console.WriteLine("Hatalı işlem seçtiniz.");
@@ -49,7 +53,7 @@ namespace Console1
                 }
                 else if (islem == "D")
                 {
-                    Console.Write("Silmek istediğiniz nedir? --> Araç {C} - Marka {B} - Renk {K} - Müşteri {M} - Kullanıcı {U} - Kira İptal{R}= ");
+                    Console.Write("Silmek istediğiniz nedir? --> Araç {C} - Marka {B} - Renk {K} - Müşteri {M} - Kullanıcı {U} - Kira İptal{R} = ");
                     string islemD = Console.ReadLine();
                     if (islemD == "C")
                     {
@@ -103,11 +107,11 @@ namespace Console1
                         ColorManager colorManager = new ColorManager(new EfColorDal());
                         ColorUpdate(colorManager);
                     }
-                    //else if (islemU == "U")
-                    //{
-                    //    UserManager userManager = new UserManager(new EfUserDal());
-                    //    UserUpdate(userManager);
-                    //}
+                    else if (islemU == "U")
+                    {
+                        UserManager userManager = new UserManager(new EfUserDal());
+                        UserUpdate(userManager);
+                    }
                     else if (islemU == "M")
                     {
                         CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
@@ -125,15 +129,15 @@ namespace Console1
                     string islemL = Console.ReadLine();
                     if (islemL == "C")
                     {
-                        CarTest();
+                        CarList();
                     }
                     else if (islemL == "B")
                     {
-                        BrandTest();
+                        BrandList();
                     }
                     else if (islemL == "K")
                     {
-                        ColorTest();
+                        ColorList();
                     }
                     else if (islemL == "U")
                     {
@@ -141,7 +145,7 @@ namespace Console1
                     }
                     else if (islemL == "M")
                     {
-                        CustomerTest();
+                        CustomerList();
                     }
                     else if (islemL == "R")
                     {
@@ -159,7 +163,7 @@ namespace Console1
             }
         }
 
-        public static void CustomerTest()
+        public static void CustomerList()
         {
             CustomerManager customerManager = new CustomerManager(new EfCustomerDal());
             var result = customerManager.GetAll();
@@ -203,9 +207,7 @@ namespace Console1
             }
         }
 
-      
-
-        public static void ColorTest()
+        public static void ColorList()
         {
             ColorManager colorManager = new ColorManager(new EfColorDal());
             Console.WriteLine("------ARAÇ RENK BİLGİ LİSTESİ------");
@@ -226,11 +228,11 @@ namespace Console1
             Console.WriteLine(" ");
         }
 
-        public static void BrandTest()
+        public static void BrandList()
         {
             BrandManager brandManager = new BrandManager(new EfBrandDal());
             var result = brandManager.GetAll();
-            Console.WriteLine("------ARAÇ MARKA BİLLİ LİSTESİ------");
+            Console.WriteLine("------ARAÇ MARKA BİLGİSİ LİSTESİ------");
             Console.WriteLine("---------------------------------------------------");
             if (result.Success == true)
             {
@@ -247,7 +249,7 @@ namespace Console1
             Console.WriteLine(" ");
         }
 
-        public static void CarTest()
+        public static void CarList()
         {
             CarManager carManager = new CarManager(new EfCarDal());
             Console.WriteLine("-----------GÜNLÜK ÜCRET KİRA BİLGİSİ LİSTESİ-----------");
@@ -302,6 +304,8 @@ namespace Console1
 
        
         }
+
+
         public static void AddCar()
         {
             Car _car = new Car();
@@ -331,6 +335,7 @@ namespace Console1
                 Console.WriteLine(result.Message);
             }
         }
+
         public static void AddBrand()
         {
             Brand _brand = new Brand();
@@ -349,6 +354,7 @@ namespace Console1
             }
 
         }
+
         public static void AddColor()
         {
 
@@ -369,23 +375,6 @@ namespace Console1
 
         }
 
-        public static void DeleteCar()
-        {
-            Car _car = new Car();
-            CarManager carManager = new CarManager(new EfCarDal());
-            Console.WriteLine("-------------ARAÇ SİLME İŞLEMİ-------------");
-            Console.Write("Araç No = ");
-            int carId = int.Parse(Console.ReadLine());
-            var result = carManager.Delete(carId);
-            if (result.Success == true)
-            {
-                Console.WriteLine(result.Message);
-            }
-            else
-            {
-                Console.WriteLine(result.Message);
-            }
-        }
         public static void RentalAdd()
         {
             Rental _rental = new Rental();
@@ -436,68 +425,6 @@ namespace Console1
             {
                 Console.WriteLine(carControl.Message);
             }
-
-        }
-        public static void UserAdd()
-        {
-            User _user = new User();
-            UserManager userManager = new UserManager(new EfUserDal());
-            Console.WriteLine("-------------KULLANICI EKLEME İŞLEMİ--------------");
-            Console.Write("Adı = ");
-            _user.FirstName = Console.ReadLine();
-            Console.Write("Soyadı = ");
-            _user.LastName = Console.ReadLine();
-            Console.Write("Email adresi = ");
-            _user.Email = Console.ReadLine();
-            Console.Write("Parola = ");
-            _user.Password =Console.ReadLine();
-            var result = userManager.Add(_user);
-            if (result.Success == true)
-            {
-                Console.WriteLine(result.Message);
-            }
-            else
-            {
-                Console.WriteLine(result.Message);
-            }
-        }
-
-
-
-        public static void DeleteColor()
-        {
-            Color _color = new Color();
-            ColorManager colorManager = new ColorManager(new EfColorDal());
-            Console.WriteLine("-------------RENK SİLME İŞLEMİ--------------");
-            Console.Write("Renk No = ");
-            int colorId = int.Parse(Console.ReadLine());
-            var result = colorManager.Delete(colorId);
-            if (result.Success == true)
-            {
-                Console.WriteLine(result.Message);
-            }
-            else
-            {
-                Console.WriteLine(result.Message);
-            }
-        }
-        public static void DeleteBrand()
-        {
-            Brand _brand = new Brand();
-            BrandManager brandManager = new BrandManager(new EfBrandDal());
-            Console.WriteLine("-------------Marka Silme işlemi--------------");
-            Console.Write("Brand Id = ");
-            int brandId = int.Parse(Console.ReadLine());
-            var result = brandManager.Delete(brandId);
-            if (result.Success == true)
-            {
-                Console.WriteLine(result.Message);
-            }
-            else
-            {
-                Console.WriteLine(result.Message);
-            }
-            Console.ReadKey();
         }
 
         public static void AddCustomer()
@@ -517,6 +444,87 @@ namespace Console1
                 Console.WriteLine(result.Message);
             }
         }
+
+        public static void UserAdd()
+        {
+            User _user = new User();
+            UserManager userManager = new UserManager(new EfUserDal());
+            Console.WriteLine("-------------KULLANICI EKLEME İŞLEMİ--------------");
+            Console.Write("Adı = ");
+            _user.FirstName = Console.ReadLine();
+            Console.Write("Soyadı = ");
+            _user.LastName = Console.ReadLine();
+            Console.Write("Email adresi = ");
+            _user.Email = Console.ReadLine();
+            Console.Write("Parola = ");
+            _user.Password = int.Parse(Console.ReadLine());
+            var result = userManager.Add(_user);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
+
+
+        public static void DeleteCar()
+        {
+            Car _car = new Car();
+            CarManager carManager = new CarManager(new EfCarDal());
+            Console.WriteLine("-------------ARAÇ SİLME İŞLEMİ-------------");
+            Console.Write("Araç No = ");
+            int carId = int.Parse(Console.ReadLine());
+            var result = carManager.Delete(carId);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
+
+        public static void DeleteColor()
+        {
+            Color _color = new Color();
+            ColorManager colorManager = new ColorManager(new EfColorDal());
+            Console.WriteLine("-------------RENK SİLME İŞLEMİ--------------");
+            Console.Write("Renk No = ");
+            int colorId = int.Parse(Console.ReadLine());
+            var result = colorManager.Delete(colorId);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+        }
+
+        public static void DeleteBrand()
+        {
+            Brand _brand = new Brand();
+            BrandManager brandManager = new BrandManager(new EfBrandDal());
+            Console.WriteLine("-------------Marka Silme işlemi--------------");
+            Console.Write("Brand Id = ");
+            int brandId = int.Parse(Console.ReadLine());
+            var result = brandManager.Delete(brandId);
+            if (result.Success == true)
+            {
+                Console.WriteLine(result.Message);
+            }
+            else
+            {
+                Console.WriteLine(result.Message);
+            }
+            Console.ReadKey();
+        }
+
         public static void DeleteCustomer()
         {
             Customer _customer = new Customer();
@@ -534,6 +542,7 @@ namespace Console1
                 Console.WriteLine(result.Message);
             }
         }
+
         public static void RentalDelete()
         {
             Rental _rental = new Rental();
@@ -552,6 +561,7 @@ namespace Console1
                 Console.WriteLine(result.Message);
             }
         }
+
         public static void UserDelete()
         {
             User _userr = new User();
@@ -569,12 +579,15 @@ namespace Console1
                 Console.WriteLine(result.Message);
             }
         }
+
+
         public static void BrandUpdate(BrandManager brandManager)
         {
             Console.WriteLine("----------MARKA GÜNCELLEM İŞLEMİ----");
             brandManager.Update(new Brand { BrandId = 3002, BrandName = "Alfa romeo" });
             Console.WriteLine(Messages.Updated);
         }
+
         public static void CarUpdate(CarManager carManager)
         {
             Console.WriteLine("------------GÜNCELLEME İŞLEMİ---------");
@@ -590,6 +603,7 @@ namespace Console1
             });
             Console.WriteLine(Messages.Updated);
         }
+
         public static void ColorUpdate(ColorManager colorManager)
         {
             Console.WriteLine("------RENK GÜNCELLEME İŞLEMİ---------");
@@ -600,6 +614,7 @@ namespace Console1
             });
             Console.WriteLine(Messages.Updated);
         }
+
         public static void CustomerUpdate(CustomerManager customerManager)
         {
             Console.WriteLine("------MÜŞTERİ BİLGİSİ GÜNCELLEME İŞLEMİ");
@@ -610,10 +625,11 @@ namespace Console1
             });
             Console.WriteLine(Messages.Updated);
         }
+
         public static void UserUpdate(UserManager userManager)
         {
             Console.WriteLine("------------KULLANICI BİLGİSİ GÜNCELLEME İŞLEMİ---------");
-            userManager.Update(new User { UserId = 1002, FirstName = "Umut", LastName = "Beldek", Email = "umutkayra@gmail.com", Password = "123456" });
+            userManager.Update(new User { UserId = 1002, FirstName = "Umut", LastName = "Beldek", Email = "umutkayra@gmail.com", Password = 123456 });
             Console.WriteLine(Messages.Updated);
         }
 
