@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -18,22 +22,16 @@ namespace Business.Concrete
         {
             _customerDal = customerDal;
         }
+        [ValidationAspect(typeof(CustomerValidator))]
         public IResult Add(Customer customer)
-        { 
-            if(customer.CompanyName.Length > 2)
-            {
-                _customerDal.Add(customer);
-                Console.WriteLine(customer.UserId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
-                return new SuccesResult(Messages.CustomerAdded);
-            }
-            else if (customer.CompanyName.Length < 2)
-            {
-                return new ErrorResult(Messages.CompanyNameInvalid);
-            }
-            else
-            {
-                return new ErrorResult(Messages.Error);
-            }
+        {
+            
+
+            
+            _customerDal.Add(customer);
+            Console.WriteLine(customer.UserId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
+            return new SuccesResult(Messages.CustomerAdded);
+       
 
         }
 
@@ -69,16 +67,31 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
         }
     
-        public IDataResult<List<Customer>> GetCustomersById(int userId)
+        public IDataResult<List<Customer>> GetById(int userId)
         {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(m => m.UserId == userId));
         }
 
+        [ValidationAspect(typeof(CustomerValidator))]
         public IResult Update(Customer customer)
         {
+
+            IResult result = BusinessRules.Run(CustomerControl(customer.UserId));
+            if (result != null)
+            {
+                return result;
+            }
             _customerDal.Update(customer);
-            Console.WriteLine("Sistemde yer alan " + customer.UserId + " numaralı " + customer.CompanyName + " şirket bilgisi güncellendi.");
-            return new SuccesResult(Messages.CustomerUpdated);
+            return new Result(true, Messages.Updated);
+        }
+        private IResult CustomerControl(int userId)
+        {
+            var result = _customerDal.Get(m =>m.UserId == userId);
+            if (result == null)
+            {
+                return new ErrorResult("Girdiğiniz Id'ye ait Müşteri bulunamadı");
+            }
+            return new SuccesResult();
         }
 
     }

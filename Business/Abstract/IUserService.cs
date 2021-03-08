@@ -12,6 +12,6 @@ namespace Business.Abstract
         IResult Delete(int userId);
         IResult Update(User users);
         IDataResult<List<User>> GetAll();
-        IDataResult<List<User>> GetUsersById(int userId);
+        IDataResult<User> GetById(int userId);
     }
 }

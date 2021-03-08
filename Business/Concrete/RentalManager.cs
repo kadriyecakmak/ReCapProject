@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -19,23 +23,14 @@ namespace Business.Concrete
         {
             _rentalDal = rentalDal;
         }
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
-            if (rental.RentDate == null)
-            {
-                _rentalDal.Add(rental);
-                return new SuccesResult(Messages.RentalAdded);
+            
+            _rentalDal.Add(rental);
+            return new SuccesResult(Messages.RentalAdded);
 
-            }
-            else if (rental.RentDate != null && rental.ReturnDate != null)
-            {
-                _rentalDal.Add(rental);
-                return new SuccesResult(Messages.RentalAdded);
-            }
-            else
-            {
-                return new ErrorResult(Messages.RentalFailed);
-            }
+           
         }
 
         public IResult Delete(Rental rental)
@@ -85,18 +80,37 @@ namespace Business.Concrete
             return new ErrorResult(Messages.RentalCarIdError);
         }
 
-    
 
+
+        [ValidationAspect(typeof(RentalValidator))]
         public IResult Update(Rental rental)
         {
+
+            IResult result = BusinessRules.Run(RentalControl(rental.RentalId));
+            if (result != null)
+            {
+                return result;
+            }
             _rentalDal.Update(rental);
-            return new SuccesResult(Messages.RentalUpdated);
+            return new Result(true, Messages.Updated);
+        }
+        private IResult RentalControl(int rentalId)
+        {
+            var result = _rentalDal.Get(r => r.RentalId == rentalId);
+            if (result == null)
+            {
+                return new ErrorResult("Girdiğiniz Id'ye ait şu an müsait değil");
+            }
+            return new SuccesResult();
         }
         public IDataResult<List<Rental>> GetRentalsById(int rentalId)
         {
             throw new NotImplementedException();
         }
-
+        public IDataResult<Rental> GetById(int rentalId)
+        {
+            return new SuccessDataResult<Rental>(_rentalDal.Get(r => r.RentalId == rentalId));
+        }
         public IDataResult<List<RentalDetailDto>> GetRentalDetails()
         {
           

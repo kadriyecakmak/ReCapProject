@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -16,18 +20,15 @@ namespace Business.Concrete
         {
             _userDal = userDal;
         }
+        [ValidationAspect(typeof(UserValidator))]
         public IResult Add(User users)
         {
-            if (users.FirstName != null && users.LastName != null && users.Email != null && users.Password != null)
-            {
-                _userDal.Add(users);
-                Console.WriteLine(users.UserId + " numaralı " + users.FirstName + " " + users.LastName + " isimli kullanıcı bilgisi sisteme eklendi.");
-                return new SuccesResult(Messages.UserAdded);
-            }
-            else
-            {
-                return new ErrorResult(Messages.Error);
-            }
+           
+           
+            _userDal.Add(users);
+            Console.WriteLine(users.UserId + " numaralı " + users.FirstName + " " + users.LastName + " isimli kullanıcı bilgisi sisteme eklendi.");
+            return new SuccesResult(Messages.UserAdded);
+          
         }
 
         public IResult Delete(int userId)
@@ -57,16 +58,31 @@ namespace Business.Concrete
             return new SuccessDataResult<List<User>>(result);
         }
 
-        public IDataResult<List<User>> GetUsersById(int userId)
+        public IDataResult<User> GetById(int userId)
         {
-            throw new NotImplementedException();
+            return new SuccessDataResult<User>(_userDal.Get(u => u.UserId == userId));
         }
 
-        public IResult Update(User users)
+        [ValidationAspect(typeof(UserValidator))]
+        public IResult Update(User user)
         {
-            _userDal.Update(users);
-            Console.WriteLine("Sistemde yer alan " + users.UserId + " numaralı " + users.FirstName + " " + users.LastName + " Kullanıcı bilgisi güncellendi.");
-            return new Result(true, Messages.CustomerUpdated);
+
+            IResult result = BusinessRules.Run(UserControl(user.UserId));
+            if (result != null)
+            {
+                return result;
+            }
+            _userDal.Update(user);
+            return new Result(true, Messages.Updated);
+        }
+        private IResult UserControl(int userId)
+        {
+            var result = _userDal.Get(u => u.UserId == userId);
+            if (result == null)
+            {
+                return new ErrorResult("Girdiğiniz Id'ye ait kullanıcı bulunamadı :(");
+            }
+            return new SuccesResult();
         }
     }
 }

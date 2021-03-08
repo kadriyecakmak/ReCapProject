@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -17,25 +21,25 @@ namespace Business.Concrete
         {
             _colorDal = colorDal;
         }
-        
 
+        [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color)
         {
-            
-            if (color.ColorName.Length >2) 
-            {
-                _colorDal.Add(color);
-                Console.WriteLine(color.ColorId + " numaralı " + color.ColorName + " Renk bilgisi sisteme eklendi");
-                return new SuccesResult(Messages.Added);
-            }
-            else if (color.ColorName.Length < 2)
-            {
-                return new ErrorResult(Messages.ColorNameInvalid);
-            }
-            else
-            {
-                return new ErrorResult(Messages.Error);
-            }
+
+            //if (color.ColorName.Length >2) 
+           
+            _colorDal.Add(color);
+            Console.WriteLine(color.ColorId + " numaralı " + color.ColorName + " Renk bilgisi sisteme eklendi");
+            return new SuccesResult(Messages.Added);
+            //}
+            //else if (color.ColorName.Length < 2)
+            //{
+            //    return new ErrorResult(Messages.ColorNameInvalid);
+            //}
+            //else
+            //{
+            //    return new ErrorResult(Messages.Error);
+            //}
 
         }
 
@@ -66,16 +70,36 @@ namespace Business.Concrete
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.ColorsListed);
         }
 
+        public IDataResult<Color> GetById(int colorId)
+        {
+            return new SuccessDataResult<Color>(_colorDal.Get(c => c.ColorId == colorId));
+        }
+
         public IDataResult<List<Color>> GetCarsByColorId(int colorId)
         {
             return new SuccessDataResult<List<Color>>(_colorDal.GetAll(c => c.ColorId == colorId));
         }
 
+        [ValidationAspect(typeof(ColorValidator))]
         public IResult Update(Color color)
         {
+
+            IResult result = BusinessRules.Run(ColorControl(color.ColorId));
+            if (result != null)
+            {
+                return result;
+            }
             _colorDal.Update(color);
-            Console.WriteLine("Sistemde yer alan " + color.ColorId + " numaralı " + color.ColorName + " renk araç bilgisi güncellendi.");
             return new Result(true, Messages.Updated);
+        }
+        private IResult ColorControl(int colorId)
+        {
+            var result = _colorDal.Get(c => c.ColorId==colorId);
+            if (result == null)
+            {
+                return new ErrorResult("Girdiğiniz Id'ye ait renk bulunamadı");
+            }
+            return new SuccesResult();
         }
     }
 }

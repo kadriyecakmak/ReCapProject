@@ -1,5 +1,9 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
+using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
@@ -17,24 +21,16 @@ namespace Business.Concrete
         {
             _brandDal = brandDal;
         }
-
+        [ValidationAspect(typeof(BrandValidator))]
         public IResult Add(Brand brand)
         {
-            if(brand.BrandName.Length>2)
-            {
+            
 
-                _brandDal.Add(brand);
-                Console.WriteLine("Sistemden " + brand.BrandId + " numaralı " + brand.BrandName + " marka araç bilgisi eklendi.");
-                return new Result(true, Messages.Added);
-            }
-            else if(brand.BrandName.Length<2)
-            {
-                return new ErrorResult(Messages.BrandNameInvalid);
-            }
-            else
-            {
-                return new ErrorResult(Messages.Error);
-            }
+            
+            _brandDal.Add(brand);
+            Console.WriteLine("Sistemden " + brand.BrandId + " numaralı " + brand.BrandName + " marka araç bilgisi eklendi.");
+            return new Result(true, Messages.Added);
+       
         }
         public IResult Delete(int brandId)
         {
@@ -60,19 +56,32 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandsListed);
         }
-        public IDataResult<List<Brand>>GetCarsByBrandId(int brandId)
+        public IDataResult<List<Brand>>GetById(int brandId)
         {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId == brandId));
 
         }
+        [ValidationAspect(typeof(BrandValidator))]
         public IResult Update(Brand brand)
         {
-        
+           
+            IResult result = BusinessRules.Run(BrandControl(brand.BrandId));
+            if (result != null)
+            {
+                return result;
+            }
             _brandDal.Update(brand);
-            Console.WriteLine("No. " + brand.BrandId + " " + brand.BrandName + "brand vehicle information in the system has been updated.");
             return new Result(true, Messages.Updated);
         }
-       
+       private IResult BrandControl(int brandId)
+        {
+            var result = _brandDal.Get(p=>p.BrandId==brandId);
+            if (result==null)
+            {
+                return new ErrorResult("Girdiğiniz Id'ye ait marka bulunamadı");
+            }
+            return new SuccesResult();
+        }
        
 
     }
