@@ -43,8 +43,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add")]
-        public IActionResult Add(Rental rental)
-        {
+        public IActionResult Add(Rental rental)//bir şey fark ettinmi tarih null gelmiyor ondan dolayı soyani bu veri tipinden ötürü olailir mi
+            //evet datetime null kabul etmez girişte ona defaul bir tarih atıp ona göre sorgu yazacağız tamam, söyle yaaynı tarihte kiralamak istersek yani tabloda null yapmıcaz ama postmande aynı tarihi girince hata vermesi gerek,aynı şeyi söyledim ya :d
+            //teslim tarihi ni bizmi giriyoruz  tConsolede öyle yapmıştık, ama bu defa dedğin gibi hocanınkiyle uymamış  evet çünkü hoca orada datetşme factorünü hesaba katmadı tm söyle olacak adam kiraladığında datime büyük se bugünkü tarihten büyükse araç kirada demek
+        {  //yapabilecek misin :)
             var result = _rentalservice.Add(rental);
             if (result.Success)
             {

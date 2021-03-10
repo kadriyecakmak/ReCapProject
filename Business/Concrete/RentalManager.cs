@@ -16,7 +16,7 @@ using System.Text;
 
 namespace Business.Concrete
 {
-    public class RentalManager:IRentalService
+    public class RentalManager : IRentalService
     {
         IRentalDal _rentalDal;
         public RentalManager(IRentalDal rentalDal)
@@ -26,11 +26,15 @@ namespace Business.Concrete
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
-            
+            IResult result = BusinessRules.Run(CarRentalControl(rental.CarId));
+            if (result != null)
+            {
+                return result;
+            }
             _rentalDal.Add(rental);
             return new SuccesResult(Messages.RentalAdded);
 
-           
+
         }
 
         public IResult Delete(Rental rental)
@@ -113,8 +117,30 @@ namespace Business.Concrete
         }
         public IDataResult<List<RentalDetailDto>> GetRentalDetails()
         {
-          
+
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails());
+        }
+        private IResult CarRentalControl(int carId)
+        {
+            var results = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate != null && r.ReturnDate <= DateTime.Now);
+            if (results.Count != 0)
+            {
+                var resultK = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate >DateTime.Now );
+                if (resultK.Count == 0)
+                {
+                    return new SuccesResult();
+                }
+                return new ErrorResult("Bu araç henüz teslim edilmediği için kiralanamaz");
+            }
+            else
+            {
+                var resultsC = _rentalDal.GetAll(r => r.CarId == carId);
+                if (resultsC.Count == 0)
+                {
+                    return new SuccesResult();
+                }
+                return new ErrorResult("Bu araç kiralandı");
+            }
         }
     }
 }
