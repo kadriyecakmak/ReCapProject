@@ -173,7 +173,7 @@ namespace Console1
             {
                 foreach (var customer in result.Data)
                 {
-                    Console.WriteLine("Müşteri No = " + customer.UserId + "  |  " + "Şirket Adı = " + customer.CompanyName);
+                    Console.WriteLine("Müşteri No = " + customer.CustomerId + "  |  " + "Şirket Adı = " + customer.CompanyName);
                 }
                 Console.WriteLine(Messages.CustomersListed);
             }
@@ -195,7 +195,7 @@ namespace Console1
                 foreach (var rental in result.Data)
                 {
                     Console.WriteLine("Model bilgisi" + rental.CarId + " | "
-                        + "Kullanıcı No = " + rental.UserId + " | "
+                        + "Müşteri No = " + rental.CustomerId + " | "
                         + "Başlangıç Tarihi = " + rental.RentDate + "---->"
                         + "Bitiş Tarihi =" + rental.RentDate);
                 }
@@ -387,8 +387,8 @@ namespace Console1
                 Console.WriteLine("Id =" + item.UserId + "First name =" + item.FirstName);
 
             }
-            Console.WriteLine("Kullanıcı seçiniz(Id olarak giriniz) =");
-            _rental.UserId = int.Parse(Console.ReadLine());
+            Console.WriteLine("Müşteri seçiniz(Id olarak giriniz) =");
+            _rental.CustomerId = int.Parse(Console.ReadLine());
             Console.Clear();
             Console.WriteLine("Araç seçiniz =");
             foreach (var item in carManager.GetAll().Data)
@@ -620,7 +620,7 @@ namespace Console1
             Console.WriteLine("------MÜŞTERİ BİLGİSİ GÜNCELLEME İŞLEMİ");
             customerManager.Update(new Customer
             {
-                UserId = 3,
+                CustomerId = 3,
                 CompanyName = "Çakmak A.Ş"
             });
             Console.WriteLine(Messages.Updated);

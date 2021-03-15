@@ -9,7 +9,7 @@ namespace Business.ValidationRules.FluentValidation
     public class CarValidator:AbstractValidator<Car>
     {
         public CarValidator()
-        {//burası mesala bunun aşağısına delete ve update için olan kuralları bakşa bir method oluşturmadan yazabilirim dimi aşağı doğru 
+        {
             RuleFor(c => c.DailyPrice).NotEmpty();
             RuleFor(c=>c.CarName).MinimumLength(2);
             RuleFor(c => c.Description).MinimumLength(2);

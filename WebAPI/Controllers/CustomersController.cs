@@ -32,9 +32,9 @@ namespace WebAPI.Controllers
 
         }
         [HttpGet("getbyid")]
-        public IActionResult Get(int userId)
+        public IActionResult Get(int customerId)
         {
-            var result = _customerservice.GetById(userId);
+            var result = _customerservice.GetById(customerId);
             if (result.Success)
             {
                 return Ok(result);

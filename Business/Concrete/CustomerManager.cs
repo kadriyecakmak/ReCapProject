@@ -29,17 +29,17 @@ namespace Business.Concrete
 
             
             _customerDal.Add(customer);
-            Console.WriteLine(customer.UserId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
+            Console.WriteLine(customer.CustomerId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
             return new SuccesResult(Messages.CustomerAdded);
        
 
         }
 
-        public IResult Delete(int userId)
+        public IResult Delete(int customerId)
         {
             try
             {
-                var customerBul = _customerDal.Get(m => m.UserId == userId);
+                var customerBul = _customerDal.Get(m => m.CustomerId == customerId);
                 if (customerBul != null)
                 {
                     _customerDal.Delete(customerBul);
@@ -67,16 +67,16 @@ namespace Business.Concrete
             return new SuccessDataResult<List<CustomerDetailDto>>(_customerDal.GetCustomerDetails());
         }
     
-        public IDataResult<List<Customer>> GetById(int userId)
+        public IDataResult<List<Customer>> GetById(int customerId)
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(m => m.UserId == userId));
+            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(m => m.CustomerId == customerId));
         }
 
         [ValidationAspect(typeof(CustomerValidator))]
         public IResult Update(Customer customer)
         {
 
-            IResult result = BusinessRules.Run(CustomerControl(customer.UserId));
+            IResult result = BusinessRules.Run(CustomerControl(customer.CustomerId));
             if (result != null)
             {
                 return result;
@@ -84,9 +84,9 @@ namespace Business.Concrete
             _customerDal.Update(customer);
             return new Result(true, Messages.Updated);
         }
-        private IResult CustomerControl(int userId)
+        private IResult CustomerControl(int customerId)
         {
-            var result = _customerDal.Get(m =>m.UserId == userId);
+            var result = _customerDal.Get(m =>m.CustomerId == customerId);
             if (result == null)
             {
                 return new ErrorResult("Girdiğiniz Id'ye ait Müşteri bulunamadı");

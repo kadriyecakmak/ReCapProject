@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebAPI.Controllers
@@ -29,6 +30,8 @@ namespace WebAPI.Controllers
         public IActionResult GetAll()
         {   //Dependcy chain --
             //Swagger - hazır dökümantasyon sunan site
+            Thread.Sleep(500);
+
             var result = _carService.GetAll();
             if (result.Success)
             {
@@ -37,6 +40,20 @@ namespace WebAPI.Controllers
             return BadRequest(result);
 
         }
+
+        [HttpGet("getcardto")]
+        public IActionResult GetCarDto()
+        {   
+
+            var result = _carService.GetCarDto();
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+        }
+
         [HttpGet ("getbyid")]
         public IActionResult Get(int carId)
         {
