@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
         public IActionResult GetAll()
         {   //Dependcy chain --
             //Swagger - hazır dökümantasyon sunan site
-            Thread.Sleep(500);
+            
 
             var result = _carService.GetAll();
             if (result.Success)
@@ -58,6 +58,27 @@ namespace WebAPI.Controllers
         public IActionResult Get(int carId)
         {
             var result = _carService.GetById(carId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+        [HttpGet("getbybrand")]
+        public IActionResult GetByBrand(int brandId)
+        {
+            var result = _carService.GetByBrandId(brandId);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet("getbycolor")]
+        public IActionResult GetByColor(int colorId)
+        {
+            var result = _carService.GetByColorId(colorId);
             if (result.Success)
             {
                 return Ok(result);

@@ -29,15 +29,8 @@ namespace Business.Concrete
        [ValidationAspect(typeof(CarValidator))]
         public IResult Add(Car car)
         {
-
-
-            //business codes
-       
             _carDal.Add(car);
-            Console.WriteLine(car.CarId + " numaralı " + car.Description + " araç bilgisi sisteme eklendi");
-            return new SuccesResult( Messages.Added); 
-            
-
+            return new SuccesResult( Messages.CarAdded);
         }
 
         public IResult Delete(int carId)
@@ -68,7 +61,7 @@ namespace Business.Concrete
 
                 return new ErrorDataResult<List<Car>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarsListed);
+            return new SuccessDataResult<List<Car>>(_carDal.GetAll(), Messages.CarListed);
         }
 
         public IDataResult<List<CarDetailDto>> GetCarDetails()
@@ -80,14 +73,8 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CarValidator))]
         public IResult Update(Car car)
         {
-
-            IResult result = BusinessRules.Run(CarControl(car.CarId));
-            if (result != null)
-            {
-                return result;
-            }
             _carDal.Update(car);
-            return new Result(true, Messages.Updated);
+            return new Result(true, Messages.CarUpdated);
         }
         private IResult CarControl(int carId)
         {
@@ -99,14 +86,14 @@ namespace Business.Concrete
             return new SuccesResult();
         }
 
-        public IDataResult<List<Car>> GetCarsByBrandId(int carId)
+        public IDataResult<List<CarDto>> GetByBrandId(int brandId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.BrandId == carId));
+            return new SuccessDataResult<List<CarDto>>(_carDal.CarDto(c => c.BrandId == brandId));
         }
 
-        public IDataResult<List<Car>> GetCarsByColorId(int carId)
+        public IDataResult<List<CarDto>> GetByColorId(int colorId)
         {
-            return new SuccessDataResult<List<Car>>(_carDal.GetAll(c => c.ColorId == carId));
+            return new SuccessDataResult<List<CarDto>>(_carDal.CarDto(c => c.ColorId == colorId));
         }
         public List<Car>GetCarsByCarId(int carId)
         {
@@ -125,7 +112,7 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<CarDto>>("Araç bulunamadı.");
             }
-            return new SuccessDataResult<List<CarDto>>(result, Messages.CarsListed);
+            return new SuccessDataResult<List<CarDto>>(result, Messages.CarListed);
         }
     }
 }

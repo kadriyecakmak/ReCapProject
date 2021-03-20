@@ -25,14 +25,8 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CustomerValidator))]
         public IResult Add(Customer customer)
         {
-            
-
-            
             _customerDal.Add(customer);
-            Console.WriteLine(customer.CustomerId + "numaralı" + customer.CompanyName + "müşteri bilgileri sisteme eklendi");
             return new SuccesResult(Messages.CustomerAdded);
-       
-
         }
 
         public IResult Delete(int customerId)
@@ -59,7 +53,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Customer>> GetAll()
         {
-            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomersListed);
+            return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomerListed);
         }
 
         public IDataResult<List<CustomerDetailDto>> GetCustomerDetails()
@@ -75,24 +69,10 @@ namespace Business.Concrete
         [ValidationAspect(typeof(CustomerValidator))]
         public IResult Update(Customer customer)
         {
-
-            IResult result = BusinessRules.Run(CustomerControl(customer.CustomerId));
-            if (result != null)
-            {
-                return result;
-            }
             _customerDal.Update(customer);
-            return new Result(true, Messages.Updated);
+            return new Result(true, Messages.CustomerUpdated);
         }
-        private IResult CustomerControl(int customerId)
-        {
-            var result = _customerDal.Get(m =>m.CustomerId == customerId);
-            if (result == null)
-            {
-                return new ErrorResult("Girdiğiniz Id'ye ait Müşteri bulunamadı");
-            }
-            return new SuccesResult();
-        }
+       
 
     }
 }

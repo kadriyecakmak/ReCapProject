@@ -6,6 +6,7 @@ using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
 using Entities.DTOs;
 using System;
@@ -37,12 +38,7 @@ namespace Business.Concrete
 
         }
 
-        public IResult Delete(Rental rental)
-        {
-            _rentalDal.Delete(rental);
-            return new SuccesResult(Messages.RentalDeleted);
-        }
-
+      
         public IResult Delete(int rentalId)
         {
             try
@@ -66,7 +62,7 @@ namespace Business.Concrete
 
         public IDataResult<List<Rental>> GetAll()
         {
-            if (DateTime.Now.Hour == 21)
+            if (DateTime.Now.Hour == 6)
             {
                 return new ErrorDataResult<List<Rental>>(Messages.MaintenanceTime);
             }
@@ -89,23 +85,34 @@ namespace Business.Concrete
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Update(Rental rental)
         {
-
-            IResult result = BusinessRules.Run(RentalControl(rental.RentalId));
-            if (result != null)
+            using (var reCapProjectContext = new ReCapProjectContext())
             {
-                return result;
+                reCapProjectContext.Rentals.Update(rental);
+                reCapProjectContext.SaveChanges();
+                return new Result(true, Messages.RentalUpdated);
             }
-            _rentalDal.Update(rental);
-            return new Result(true, Messages.Updated);
         }
-        private IResult RentalControl(int rentalId)
+        private IResult CarRentalControl(int carId)
         {
-            var result = _rentalDal.Get(r => r.RentalId == rentalId);
-            if (result == null)
+            var results = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate != null && r.ReturnDate <= DateTime.Now);
+            if (results.Count != 0)
             {
-                return new ErrorResult("Girdiğiniz Id'ye ait şu an müsait değil");
+                var resultK = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate > DateTime.Now);
+                if (resultK.Count == 0)
+                {
+                    return new SuccesResult();
+                }
+                return new ErrorResult(Messages.RentalFailed);
             }
-            return new SuccesResult();
+            else
+            {
+                var resultsC = _rentalDal.GetAll(r => r.CarId == carId);
+                if (resultsC.Count == 0)
+                {
+                    return new SuccesResult();
+                }
+                return new ErrorResult(Messages.RentalFailed);
+            }
         }
         public IDataResult<List<Rental>> GetRentalsById(int rentalId)
         {
@@ -120,28 +127,28 @@ namespace Business.Concrete
 
             return new SuccessDataResult<List<RentalDetailDto>>(_rentalDal.GetRentalDetails());
         }
-        private IResult CarRentalControl(int carId)
-        {
-            var results = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate != null && r.ReturnDate <= DateTime.Now);
-            if (results.Count != 0)
-            {
-                var resultK = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate >DateTime.Now );
-                if (resultK.Count == 0)
-                {
-                    return new SuccesResult();
-                }
-                return new ErrorResult("Bu araç henüz teslim edilmediği için kiralanamaz");
-            }
-            else
-            {
-                var resultsC = _rentalDal.GetAll(r => r.CarId == carId);
-                if (resultsC.Count == 0)
-                {
-                    return new SuccesResult();
-                }
-                return new ErrorResult("Bu araç kiralandı");
-            }
-        }
+        //private IResult CarRentalControl(int carId)
+        //{
+        //    var results = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate != null && r.ReturnDate <= DateTime.Now);
+        //    if (results.Count != 0)
+        //    {
+        //        var resultK = _rentalDal.GetAll(r => r.CarId == carId && r.ReturnDate >DateTime.Now );
+        //        if (resultK.Count == 0)
+        //        {
+        //            return new SuccesResult();
+        //        }
+        //        return new ErrorResult("Bu araç henüz teslim edilmediği için kiralanamaz");
+        //    }
+        //    else
+        //    {
+        //        var resultsC = _rentalDal.GetAll(r => r.CarId == carId);
+        //        if (resultsC.Count == 0)
+        //        {
+        //            return new SuccesResult();
+        //        }
+        //        return new ErrorResult("Bu araç kiralandı");
+        //    }
+        //}
 
         public IDataResult<List<RentalDto>> GetRentalDto()
         {

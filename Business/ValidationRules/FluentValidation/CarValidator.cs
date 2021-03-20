@@ -10,18 +10,20 @@ namespace Business.ValidationRules.FluentValidation
     {
         public CarValidator()
         {
+            RuleFor(c => c.BrandId).NotEmpty();
+            RuleFor(c => c.ColorId).NotEmpty();
+            RuleFor(c => c.CarName).NotEmpty();
+            RuleFor(c => c.CarName).MinimumLength(2);
+            RuleFor(c => c.ModelYear).NotEmpty();
             RuleFor(c => c.DailyPrice).NotEmpty();
-            RuleFor(c=>c.CarName).MinimumLength(2);
-            RuleFor(c => c.Description).MinimumLength(2);
             RuleFor(c => c.DailyPrice).GreaterThan(0);
-            RuleFor(c => c.DailyPrice).GreaterThanOrEqualTo(300).When(p => p.CarId == 1);
-            RuleFor(c => c.CarName).Must(StartWithK).WithMessage("Ürünler K harfi ile başlamalı çünkü benim başharfim :)");
-
+            RuleFor(c => c.DailyPrice).GreaterThanOrEqualTo(500).When(c => c.BrandId == 3);
+            //Araç eklerken marka ıd 3 olarak girilirse en az günlük fiyatı 500 lira olmalı
+            RuleFor(c => c.Description).NotEmpty();
+            RuleFor(c => c.Description).MinimumLength(2);
         }
 
-        private bool StartWithK(string arg)
-        {
-            return arg.StartsWith("K");
-        }
+        
+        
     }
 }

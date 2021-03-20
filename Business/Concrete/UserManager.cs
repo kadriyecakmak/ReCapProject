@@ -26,7 +26,6 @@ namespace Business.Concrete
            
            
             _userDal.Add(users);
-            Console.WriteLine(users.UserId + " numaralı " + users.FirstName + " " + users.LastName + " isimli kullanıcı bilgisi sisteme eklendi.");
             return new SuccesResult(Messages.UserAdded);
           
         }
@@ -65,15 +64,8 @@ namespace Business.Concrete
 
         [ValidationAspect(typeof(UserValidator))]
         public IResult Update(User user)
-        {
-
-            IResult result = BusinessRules.Run(UserControl(user.UserId));
-            if (result != null)
-            {
-                return result;
-            }
-            _userDal.Update(user);
-            return new Result(true, Messages.Updated);
+        { _userDal.Update(user);
+            return new Result(true, Messages.UserUpdated);
         }
         private IResult UserControl(int userId)
         {

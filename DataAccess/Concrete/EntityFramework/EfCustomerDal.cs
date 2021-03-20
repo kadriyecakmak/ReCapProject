@@ -4,7 +4,7 @@ using Entities.Concrete;
 using Entities.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Linq;//bunu normalde bende otomatik ekliyor ama sizde eklemiyormuş
+using System.Linq; 
 using System.Text;
 
 namespace DataAccess.Concrete.EntityFramework

@@ -66,11 +66,11 @@ namespace DataAccess.Concrete.InMemory
         {
             Car CarToUpdate = _cars.SingleOrDefault(c => c.CarId == car.CarId);
             CarToUpdate.BrandId = car.BrandId;
-            CarToUpdate.ModelYear = car.ModelYear;
             CarToUpdate.ColorId = car.ColorId;
+            CarToUpdate.CarName = car.CarName;
             CarToUpdate.DailyPrice = car.DailyPrice;
-            CarToUpdate.Description = car.Description; 
-
+            CarToUpdate.ModelYear = car.ModelYear;
+            CarToUpdate.Description = car.Description;
 
         }
     }

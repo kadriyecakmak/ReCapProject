@@ -23,7 +23,7 @@ namespace DataAccess.Concrete.EntityFramework
                              join m in context.Customers
                              on r.CustomerId equals m.CustomerId
                              join k in context.Users
-                             on m.UserId equals k.UserId
+                             on m.CustomerId equals k.UserId
                              select new RentalDetailDto
                              {
                                  RentalId = r.RentalId,
@@ -49,7 +49,7 @@ namespace DataAccess.Concrete.EntityFramework
                               join m in context.Customers
                               on r.CustomerId equals m.CustomerId
                               join k in context.Users
-                              on m.UserId equals k.UserId
+                              on m.CustomerId equals k.UserId
                               where r.RentalId == rentalId
                               orderby r.RentalId ascending
                               select new RentalDetailDto

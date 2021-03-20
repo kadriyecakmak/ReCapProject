@@ -13,27 +13,29 @@ namespace DataAccess.Concrete.EntityFramework
 
     public class EfCarDal : EfEntityRepositoryBase<Car, ReCapProjectContext>, ICarDal
     {
-        public List<CarDto> CarDto()
+        public List<CarDto> CarDto(Expression<Func<Car, bool>> filter = null)
         {
-            using (ReCapProjectContext context=new ReCapProjectContext())
+            using (ReCapProjectContext recapContext = new ReCapProjectContext())
             {
-                var result = from car in context.Cars
-                             join brand in context.Brands
-                             on car.BrandId equals brand.BrandId
-                             join color in context.Colors
-                             on car.ColorId equals color.ColorId
-                             select new CarDto
-                             {
-                                 CarId = car.CarId,
-                                 BrandName=brand.BrandName,
-                                 ColorName=color.ColorName,
-                                 CarName=car.CarName,
-                                 Description=car.Description,
-                                 DailyPrice=car.DailyPrice,
-                                 ModelYear=car.ModelYear
-                             };
-                return result.ToList();
+                IQueryable<CarDto> carDetailsDtos = from car in filter is null ?
+                                     recapContext.Cars : recapContext.Cars.Where(filter)
+                                     join brand in recapContext.Brands
+                                         on car.BrandId equals brand.BrandId
+                                     join color in recapContext.Colors
+                                         on car.ColorId equals color.ColorId
+                                     select new CarDto
+                                     {
+                                         CarId = car.CarId,
+                                         CarName = car.CarName,
+                                         BrandName = brand.BrandName,
+                                         ColorName = color.ColorName,
+                                         ModelYear = car.ModelYear,
+                                         DailyPrice = car.DailyPrice,
+                                         Description = car.Description
+                                     };
+                return carDetailsDtos.ToList();
             }
+
         }
 
         public List<CarDetailDto> GetCarDetails()

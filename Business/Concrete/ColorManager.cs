@@ -25,22 +25,8 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ColorValidator))]
         public IResult Add(Color color)
         {
-
-            //if (color.ColorName.Length >2) 
-           
             _colorDal.Add(color);
-            Console.WriteLine(color.ColorId + " numaralı " + color.ColorName + " Renk bilgisi sisteme eklendi");
-            return new SuccesResult(Messages.Added);
-            //}
-            //else if (color.ColorName.Length < 2)
-            //{
-            //    return new ErrorResult(Messages.ColorNameInvalid);
-            //}
-            //else
-            //{
-            //    return new ErrorResult(Messages.Error);
-            //}
-
+            return new SuccesResult(Messages.ColorAdded);
         }
 
         public IResult Delete(int colorId)
@@ -67,7 +53,7 @@ namespace Business.Concrete
         public IDataResult<List<Color>> GetAll()
         {
 
-            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.ColorsListed);
+            return new SuccessDataResult<List<Color>>(_colorDal.GetAll(), Messages.ColorListed);
         }
 
         public IDataResult<Color> GetById(int colorId)
@@ -84,22 +70,9 @@ namespace Business.Concrete
         public IResult Update(Color color)
         {
 
-            IResult result = BusinessRules.Run(ColorControl(color.ColorId));
-            if (result != null)
-            {
-                return result;
-            }
             _colorDal.Update(color);
-            return new Result(true, Messages.Updated);
+            return new Result(true, Messages.ColorUpdated);
         }
-        private IResult ColorControl(int colorId)
-        {
-            var result = _colorDal.Get(c => c.ColorId==colorId);
-            if (result == null)
-            {
-                return new ErrorResult("Girdiğiniz Id'ye ait renk bulunamadı");
-            }
-            return new SuccesResult();
-        }
+        
     }
 }
