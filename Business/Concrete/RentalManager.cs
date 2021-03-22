@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -24,6 +25,8 @@ namespace Business.Concrete
         {
             _rentalDal = rentalDal;
         }
+
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Add(Rental rental)
         {
@@ -38,7 +41,7 @@ namespace Business.Concrete
 
         }
 
-      
+        [SecuredOperation("admin")]
         public IResult Delete(int rentalId)
         {
             try
@@ -81,7 +84,7 @@ namespace Business.Concrete
         }
 
 
-
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(RentalValidator))]
         public IResult Update(Rental rental)
         {

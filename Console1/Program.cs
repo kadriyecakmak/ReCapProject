@@ -1,5 +1,6 @@
 ﻿using Business.Concrete;
 using Business.Constants;
+using Core.Entities.Concrete;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
@@ -240,7 +241,7 @@ namespace Console1
                 {
                     Console.WriteLine("Brand Id = " + brand.BrandId + "  |  " + "Brand Name = " + brand.BrandName);
                 }
-                Console.WriteLine(Messages.BrandsListed);
+                Console.WriteLine(Messages.BrandListed);
             }
             else
             {
@@ -265,7 +266,7 @@ namespace Console1
                         + "Description = " + car.Description + "  --->  "
                         + "Daily Price = " + car.DailyPrice + " TL");
                 }
-                Console.WriteLine(Messages.CarsListed);
+                Console.WriteLine(Messages.CarListed);
             }
             else
             {
@@ -457,7 +458,6 @@ namespace Console1
             Console.Write("Email adresi = ");
             _user.Email = Console.ReadLine();
             Console.Write("Parola = ");
-            _user.Password = int.Parse(Console.ReadLine());
             var result = userManager.Add(_user);
             if (result.Success == true)
             {
@@ -629,7 +629,7 @@ namespace Console1
         public static void UserUpdate(UserManager userManager)
         {
             Console.WriteLine("------------KULLANICI BİLGİSİ GÜNCELLEME İŞLEMİ---------");
-            userManager.Update(new User { UserId = 1002, FirstName = "Umut", LastName = "Beldek", Email = "umutkayra@gmail.com", Password = 123456 });
+            userManager.Update(new User { UserId = 1002, FirstName = "Umut", LastName = "Beldek", Email = "umutkayra@gmail.com" });
             Console.WriteLine(Messages.Updated);
         }
 
