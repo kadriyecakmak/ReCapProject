@@ -1,6 +1,9 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -21,14 +24,21 @@ namespace Business.Concrete
         {
             _brandDal = brandDal;
         }
+        [SecuredOperation("admin")]
         [ValidationAspect(typeof(BrandValidator))]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IBrandService.Get")]
         public IResult Add(Brand brand)
         {
             _brandDal.Add(brand);
             Console.WriteLine("Sistemden " + brand.BrandId + " numaralı " + brand.BrandName + " marka araç bilgisi eklendi.");
-            return new Result(true, Messages.Added);
+            return new Result(true, Messages.BrandAdded);
        
         }
+        [SecuredOperation("admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IBrandService.Get")]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(int brandId)
         {
             try
@@ -49,16 +59,20 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.IdError);
             }
         }
+        [CacheAspect]
         public IDataResult<List<Brand>> GetAll()
         {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(), Messages.BrandListed);
         }
+        [CacheAspect]
         public IDataResult<List<Brand>>GetById(int brandId)
         {
             return new SuccessDataResult<List<Brand>>(_brandDal.GetAll(b => b.BrandId == brandId));
 
         }
         [ValidationAspect(typeof(BrandValidator))]
+        [SecuredOperation("admin")]
+        [CacheRemoveAspect("IBrandService.Get")]
         public IResult Update(Brand brand)
         {
           

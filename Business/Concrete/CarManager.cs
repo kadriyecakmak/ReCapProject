@@ -2,6 +2,9 @@
 using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac;
+using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -26,8 +29,10 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-       [SecuredOperation("admin")]
-       [ValidationAspect(typeof(CarValidator))]
+        [SecuredOperation("admin")]
+        [ValidationAspect(typeof(CarValidator))]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Add(Car car)
         {
             _carDal.Add(car);
@@ -35,6 +40,8 @@ namespace Business.Concrete
         }
 
         [SecuredOperation("admin")]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Delete(int carId)
         {
             try
@@ -55,7 +62,8 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.Error);
             }
         }
-
+        [CacheAspect]
+        [PerformanceAspect(10)]//key,value
         public IDataResult<List<Car>> GetAll()
         {
             if (DateTime.Now.Hour == 19)
@@ -73,6 +81,7 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(CarValidator))]
+        [CacheRemoveAspect("ICarService.Get")]
         public IResult Update(Car car)
         {
             _carDal.Update(car);
@@ -101,12 +110,13 @@ namespace Business.Concrete
         {
             return _carDal.GetAll(c => c.CarId == carId);
         }
-
+        [CacheAspect]
+        [PerformanceAspect(5)]
         public IDataResult<Car> GetById(int carId)
         {
             return new SuccessDataResult<Car>(_carDal.Get(c => c.CarId == carId));
         }
-
+        [CacheAspect]
         public IDataResult<List<CarDto>> GetCarDto()
         {
             var result = _carDal.CarDto();
@@ -115,6 +125,21 @@ namespace Business.Concrete
                 return new ErrorDataResult<List<CarDto>>("Araç bulunamadı.");
             }
             return new SuccessDataResult<List<CarDto>>(result, Messages.CarListed);
+        }
+
+        [TransactionScopeAspect]
+        public IResult AddTransactionalTest(Car car)
+        {
+            Add(car);
+            if (car.DailyPrice < 10)
+            {
+                throw new Exception("");
+            }
+
+            Add(car);
+
+            return null;
+
         }
     }
 }

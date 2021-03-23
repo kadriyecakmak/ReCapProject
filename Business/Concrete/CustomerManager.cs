@@ -1,6 +1,7 @@
 ﻿using Business.Abstract;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -28,7 +29,7 @@ namespace Business.Concrete
             _customerDal.Add(customer);
             return new SuccesResult(Messages.CustomerAdded);
         }
-
+        [CacheRemoveAspect("ICustomerService.Get")]
         public IResult Delete(int customerId)
         {
             try
@@ -50,7 +51,7 @@ namespace Business.Concrete
             }
         }
 
-
+        [CacheAspect]
         public IDataResult<List<Customer>> GetAll()
         {
             return new SuccessDataResult<List<Customer>>(_customerDal.GetAll(), Messages.CustomerListed);

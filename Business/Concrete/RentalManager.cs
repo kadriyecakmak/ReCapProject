@@ -2,6 +2,8 @@
 using Business.BusinessAspect.Autofac;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Business;
@@ -28,6 +30,8 @@ namespace Business.Concrete
 
         [SecuredOperation("admin")]
         [ValidationAspect(typeof(RentalValidator))]
+        [TransactionScopeAspect]
+        [CacheRemoveAspect("IRentalService.Get")]
         public IResult Add(Rental rental)
         {
             IResult result = BusinessRules.Run(CarRentalControl(rental.CarId));
@@ -40,7 +44,7 @@ namespace Business.Concrete
 
 
         }
-
+        [CacheRemoveAspect("IRentalService.Get")]
         [SecuredOperation("admin")]
         public IResult Delete(int rentalId)
         {
@@ -62,7 +66,7 @@ namespace Business.Concrete
                 return new ErrorResult(Messages.Error);
             }
         }
-
+        [CacheAspect]
         public IDataResult<List<Rental>> GetAll()
         {
             if (DateTime.Now.Hour == 6)
@@ -71,7 +75,7 @@ namespace Business.Concrete
             }
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll(), Messages.RentalListed);
         }
-
+        [CacheAspect]
 
         public IResult GetRentalICarId(int carId)
         {
