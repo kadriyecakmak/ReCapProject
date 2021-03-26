@@ -12,7 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarImagesController :ControllerBase
+    public class CarImagesController : ControllerBase
     {
         ICarImageService _carImageService;
         IWebHostEnvironment _webHostEnvironment;
@@ -56,6 +56,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
         [HttpDelete("delete")]
         public IActionResult Delete(int carImageId)
         {
@@ -66,6 +67,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
         [HttpPut("update")]
         public IActionResult Update([FromForm] int carImageId, [FromForm] IFormFile file)
         {
@@ -76,6 +78,7 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
+
         [HttpGet("getbyid")]
         public IActionResult GetById(int carImageId)
         {
@@ -86,7 +89,8 @@ namespace WebAPI.Controllers
             }
             return BadRequest(result);
         }
-        [HttpGet("getbycarimagesid")]
+
+        [HttpGet("getbycarimageid")]
         public IActionResult GetByCarId(int carId)
         {
             var result = _carImageService.CheckIfCarHaveNoImage(carId);

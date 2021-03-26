@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Transactions;
 
-namespace Core.Aspects.Autofac
+namespace Core.Aspects.Autofac.Transaction
 {
     public class TransactionScopeAspect : MethodInterception
     {

@@ -1,8 +1,9 @@
 ﻿using Core.DataAccess.EntityFramework;
 using DataAccess.Abstract;
 using Entities.Concrete;
-using System;
 using Entities.DTOs;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -10,14 +11,14 @@ using System.Text;
 
 namespace DataAccess.Concrete.EntityFramework
 {
-
     public class EfCarDal : EfEntityRepositoryBase<Car, ReCapProjectContext>, ICarDal
     {
         public List<CarDto> CarDto(Expression<Func<Car, bool>> filter = null)
         {
             using (ReCapProjectContext recapContext = new ReCapProjectContext())
             {
-                IQueryable<CarDto> carDetailsDtos = from car in filter is null ?
+                IQueryable<CarDto>
+                    carDetailsDtos = from car in filter is null ?
                                      recapContext.Cars : recapContext.Cars.Where(filter)
                                      join brand in recapContext.Brands
                                          on car.BrandId equals brand.BrandId
@@ -31,7 +32,8 @@ namespace DataAccess.Concrete.EntityFramework
                                          ColorName = color.ColorName,
                                          ModelYear = car.ModelYear,
                                          DailyPrice = car.DailyPrice,
-                                         Description = car.Description
+                                         Description = car.Description,
+                                         ImagePath = recapContext.CarImages.Where(image => image.CarId == car.CarId).FirstOrDefault().ImagePath
                                      };
                 return carDetailsDtos.ToList();
             }
@@ -53,12 +55,13 @@ namespace DataAccess.Concrete.EntityFramework
                                  BrandId = b.BrandId,
                                  ColorId = k.ColorId,
                                  DailyPrice = c.DailyPrice,
-                                 Description = c.Description,
+                                 CarName = c.CarName,
                                  ModelYear = c.ModelYear
                              };
                 return result.ToList();
             }
         }
+
     }
 }
 
